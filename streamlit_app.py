@@ -32,12 +32,12 @@ def query_index(_index, query_text):
 
 
 # This should be cached and only fully runs once
-index = initialize_index(index_name, documents_folder)
+index = initialH chatbotndex(index_name, documents_folder)
 
 
-st.title("🦙 Llama Index Demo 🦙")
-st.header("Welcome to the Llama Index Streamlit Demo")
-st.text("Please enter a query about Paul Graham's essays")
+st.title("😎🏦 BH chatbot 🏦😎")
+st.header("Bienvenido al demo de autogestion para atencion al cliente")
+st.text("Ingrese su consulta sobre productos y servivios BH")
 
 text = st.text_input("Query text:")
 
