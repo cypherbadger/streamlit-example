@@ -1,38 +1,46 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
+import os
+
 import streamlit as st
+from llama_index import GPTSimpleVectorIndex, SimpleDirectoryReader
 
-"""
-# Welcome to Streamlit!
-
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
-
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
-
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+# NOTE: for local testing only, do NOT deploy with your key hardcoded
+# to use this for yourself, create a file called .streamlit/secrets.toml with your api key
+# Learn more about Streamlit on the docs: https://docs.streamlit.io/
+os.environ["OPENAI_API_KEY"] = st.secrets["openai_api_key"]
 
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+index_name = "./index.json"
+documents_folder = "./documents"
 
-    Point = namedtuple('Point', 'x y')
-    data = []
 
-    points_per_turn = total_points / num_turns
+@st.cache_resource
+def initialize_index(index_name, documents_folder):
+    if os.path.exists(index_name):
+        index = GPTSimpleVectorIndex.load_from_disk(index_name)
+    else:
+        documents = SimpleDirectoryReader(documents_folder).load_data()
+        index = GPTSimpleVectorIndex(documents)
+        index.save_to_disk(index_name)
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
+    return index
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+
+@st.cache_data(max_entries=200, persist=True)
+def query_index(_index, query_text):
+    response = _index.query(query_text)
+    return str(response)
+
+
+# This should be cached and only fully runs once
+index = initialize_index(index_name, documents_folder)
+
+
+st.title("🦙 Llama Index Demo 🦙")
+st.header("Welcome to the Llama Index Streamlit Demo")
+st.text("Please enter a query about Paul Graham's essays")
+
+text = st.text_input("Query text:")
+
+if st.button("Run Query") and text is not None:
+    response = query_index(index, text)
+    st.markdown(response)
