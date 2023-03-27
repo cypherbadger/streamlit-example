@@ -32,7 +32,7 @@ def query_index(_index, query_text):
 
 
 # This should be cached and only fully runs once
-index = initialndex(index_name, documents_folder)
+index = initialize_index(index_name, documents_folder)
 
 
 st.title("😎🏦 BH chatbot 🏦😎")
