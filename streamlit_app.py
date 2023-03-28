@@ -3,6 +3,7 @@ import os
 import streamlit as st
 from llama_index import QuestionAnswerPrompt, GPTSimpleVectorIndex, SimpleDirectoryReader, LLMPredictor, PromptHelper
 from langchain import OpenAI
+from langchain.chat_models import ChatOpenAI
 
 # NOTE: for local testing only, do NOT deploy with your key hardcoded
 # to use this for yourself, create a file called .streamlit/secrets.toml with your api key
