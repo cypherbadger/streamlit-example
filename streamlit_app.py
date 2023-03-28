@@ -35,7 +35,7 @@ QA_PROMPT_TMPL = (
     "---------------------\n"
     "{context_str}"
     "\n---------------------\n"
-    "Dadada dicha informacion, responde la siguiente pregunta como si fueras un agente expecializado de atencion al cliente, no debes prorporcionar informacion que este en el contexto: {query_str}\n"
+    "Dadada dicha informacion, responde la siguiente pregunta como si fueras un agente expecializado de atencion al cliente, no debes inventar respuestas que no aparezcan en el contexto dado: {query_str}\n"
 )
 QA_PROMPT = QuestionAnswerPrompt(QA_PROMPT_TMPL)
 
@@ -46,7 +46,7 @@ index = GPTSimpleVectorIndex(documents, llm_predictor=llm_predictor, prompt_help
 @st.cache_data(max_entries=200, persist=True)
 def query_index(_index, query_text):
     query_str = query_text
-    response = _index.query(query_str, text_qa_template=QA_PROMPT, similarity_top_k=3)
+    response = _index.query(query_str, text_qa_template=QA_PROMPT, similarity_top_k=4)
     return str(response)
 
 
