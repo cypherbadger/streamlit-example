@@ -46,7 +46,7 @@ index = GPTSimpleVectorIndex(documents, llm_predictor=llm_predictor, prompt_help
 @st.cache_data(max_entries=200, persist=True)
 def query_index(_index, query_text):
     query_str = query_text
-    response = _index.query(query_str, text_qa_template=QA_PROMPT, similarity_top_k=4)
+    response = _index.query(query_str, text_qa_template=QA_PROMPT, similarity_top_k=1)
     return str(response)
 
 
