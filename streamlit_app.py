@@ -1,7 +1,8 @@
 import os
 
 import streamlit as st
-from llama_index import QuestionAnswerPrompt, GPTSimpleVectorIndex, SimpleDirectoryReader
+from llama_index import QuestionAnswerPrompt, GPTSimpleVectorIndex, SimpleDirectoryReader, LLMPredictor, PromptHelper
+from langchain import OpenAI
 
 # NOTE: for local testing only, do NOT deploy with your key hardcoded
 # to use this for yourself, create a file called .streamlit/secrets.toml with your api key
@@ -15,6 +16,19 @@ documents_folder = "./documents"
 # load documents
 documents = SimpleDirectoryReader(documents_folder).load_data()
 
+
+# define prompt helper
+# set maximum input size
+max_input_size = 4096
+# set number of output tokens
+num_output = 512
+# set maximum chunk overlap
+max_chunk_overlap = 20
+prompt_helper = PromptHelper(max_input_size, num_output, max_chunk_overlap)
+
+# define LLM
+llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-003", max_tokens=num_output))
+
 # define custom QuestionAnswerPrompt
 QA_PROMPT_TMPL = (
     "We have provided context information below. \n"
@@ -26,7 +40,7 @@ QA_PROMPT_TMPL = (
 QA_PROMPT = QuestionAnswerPrompt(QA_PROMPT_TMPL)
 
 # Build GPTSimpleVectorIndex
-index = GPTSimpleVectorIndex(documents)
+index = GPTSimpleVectorIndex(documents, llm_predictor=llm_predictor, prompt_helper=prompt_helper)
 
 
 @st.cache_data(max_entries=200, persist=True)
