@@ -31,11 +31,11 @@ llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-
 
 # define custom QuestionAnswerPrompt
 QA_PROMPT_TMPL = (
-    "We have provided context information below. \n"
+    "La informacion detallada sobre productos y servicios del Banco Hipotecario se proporciona aca abajo. \n"
     "---------------------\n"
     "{context_str}"
     "\n---------------------\n"
-    "Given this information, please answer the question: {query_str}\n"
+    "Dadada dicha informacion, responde la siguiente pregunta como si fueras un agente expecializado de atencion al cliente, no debes prorporcionar informacion que este en el contexto: {query_str}\n"
 )
 QA_PROMPT = QuestionAnswerPrompt(QA_PROMPT_TMPL)
 
