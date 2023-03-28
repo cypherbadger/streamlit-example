@@ -27,7 +27,7 @@ max_chunk_overlap = 20
 prompt_helper = PromptHelper(max_input_size, num_output, max_chunk_overlap)
 
 # define LLM
-llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="text-davinci-003", max_tokens=num_output))
+llm_predictor = LLMPredictor(llm=OpenAI(temperature=0, model_name="gpt-3.5-turbo", max_tokens=num_output))
 
 # define custom QuestionAnswerPrompt
 QA_PROMPT_TMPL = (
@@ -46,7 +46,7 @@ index = GPTSimpleVectorIndex(documents, llm_predictor=llm_predictor, prompt_help
 @st.cache_data(max_entries=200, persist=True)
 def query_index(_index, query_text):
     query_str = query_text
-    response = _index.query(query_str, text_qa_template=QA_PROMPT)
+    response = _index.query(query_str, text_qa_template=QA_PROMPT, similarity_top_k=5)
     return str(response)
 
 
